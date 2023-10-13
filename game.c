@@ -1,3 +1,5 @@
+#define TOTEM 5
+
 #include "system.h"
 #include "startup.h"
 #include "spin.h"
