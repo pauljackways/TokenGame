@@ -4,6 +4,8 @@
 #include "startup.h"
 #include "spin.h"
 #include "attack.h"
+#include "button.h"
+#include "led.h"
 
 int main (void)
 {
