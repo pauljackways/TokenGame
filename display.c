@@ -23,20 +23,27 @@ void display_init (void) {
     }
 }
 
-uint8_t current_row;
+uint8_t current_row = 0;
 
 void display_column(uint8_t row_pattern, uint8_t current_column)
 {
-    pio_output_high(cols[current_column]);
-    pio_output_high(rows[current_row]);
+    for (uint8_t i=0; i<LEDMAT_ROWS_NUM; i++) {
+        pio_output_high (rows[i]);
+    }
+    pio_output_low(cols[current_column]);
     for (uint8_t i=0; i<8; i++) {
         current_row = i;
         if ((row_pattern >> i) & 1) {
-            pio_output_low(cols[current_column]);
             pio_output_low (rows[i]);
         } else {
             pio_output_high (rows[i]);
-            pio_output_high(cols[current_column]);
         }
     }
+    pio_output_high(cols[current_column]);
+}
+
+uint8_t display_add (uint8_t image_1, uint8_t image_2) 
+{
+    uint8_t result = image_2 | image_1;
+    return result;
 }

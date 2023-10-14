@@ -1,5 +1,6 @@
-#define TOTEM 15
+#define TOTEM 5
 #define MAX_HEALTH 5
+// MAX_HEALTH should not be changed until a formula has beed added to reduce the health bars to scale
 
 #include "system.h"
 #include "button.h"
@@ -9,18 +10,32 @@
 #include "spin.h"
 #include "display.h"
 #include "pio.h"
+#include <stdlib.h>
 
-static uint8_t bitmap[] =
+static uint8_t totem[LEDMAT_COLS_NUM];
+static uint8_t healthbar[] =
 {
     0x01, 0x01, 0x01, 0x01, 0x01
 };
 
 uint8_t damage (uint8_t health) 
 {
-    bitmap[health-1]--;
-    if (health == 1) {
-    }
+    healthbar[health-1]--;
     return health - 1;
+}
+
+void get_totem (void) {
+    const uint8_t totem_list[5][5] = {
+        {0x10, 0x08, 0x7C, 0x08, 0x10},
+        {0x10, 0x20, 0x7C, 0x20, 0x10},
+        {0x10, 0x38, 0x54, 0x10, 0x10},
+        {0x10, 0x10, 0x54, 0x38, 0x10},
+        {0x10, 0x10, 0x7C, 0x10, 0x10}
+    };
+    uint8_t rand_i = rand() % 5;
+    for (uint8_t i=0; i<LEDMAT_COLS_NUM; i++) {
+        totem[i] = totem_list[rand_i][i];
+    }
 }
 
 int main (void)
@@ -31,18 +46,16 @@ int main (void)
     display_init();
 
     // Game initialisation - life bar animation?
+    // startup();
     uint8_t led_level = 0;
     uint8_t totem_count = 0;
     bool button_on = false;
-    
-    // startup();
-
     uint8_t current_column = 0;
     uint8_t health = MAX_HEALTH;
 
-    while (1)
+    while (health >= 1)
     {
-        display_column (bitmap[current_column], current_column);
+        display_column (display_add(totem[current_column],healthbar[current_column]), current_column);
 
         if (totem_count < led_level) {
             led_on ();
@@ -52,6 +65,7 @@ int main (void)
 
         if (button_pressed_p () && button_on == false)
         {
+            get_totem();
             health = damage(health);
             button_on = true;
             led_level++;
@@ -91,4 +105,5 @@ int main (void)
             current_column = 0;
         }     
     }
+    // GAME OVER
 }
