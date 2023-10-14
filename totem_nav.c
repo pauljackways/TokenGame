@@ -2,27 +2,6 @@
 #include "system.h"
 #include "navswitch.h"
 
-// #define NAVSWITCH_NUM ARRAY_SIZE(navswitch_cfg)
-
-
-// typedef struct
-// {
-//     bool current;
-//     bool previous;
-// } navswitch_state_t;
-
-// /* Define navswitch PIO connections.  */    
-// static const navswitch_cfg_t navswitch_cfg[] =
-// {
-//     {NAVSWITCH_NORTH_PIO},
-//     {NAVSWITCH_EAST_PIO},
-//     {NAVSWITCH_SOUTH_PIO}, 
-//     {NAVSWITCH_WEST_PIO},
-//     {NAVSWITCH_PUSH_PIO}
-// };
-
-// static navswitch_state_t navswitch_state[NAVSWITCH_NUM];
-
 void totem_nav_init(void) {
     navswitch_init ();
 }
