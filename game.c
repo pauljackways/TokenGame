@@ -6,7 +6,7 @@
 #include "led.h"
 #include "attack.h"
 #include "startup.h"
-#include "spin.h"
+#include "choose.h"
 #include "display.h"
 #include "pio.h"
 #include "totem_nav.h"
@@ -77,7 +77,7 @@ int main (void)
                 led_level++;
                 if (led_level > TOTEM) {
                     led_level = 0;
-                    // SPIN!!!
+                    // CHOOSE!!!
                 }
                 correct = get_totem(correct);
             } else {
