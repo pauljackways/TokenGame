@@ -26,7 +26,7 @@ uint8_t damage(uint8_t health)
     return health - 1;
 }
 
-uint8_t get_totem (void) {
+uint8_t get_totem (uint8_t current_totem) {
     const uint8_t totem_list[5][5] = {
         {0x10, 0x08, 0x7C, 0x08, 0x10},
         {0x10, 0x10, 0x54, 0x38, 0x10},
@@ -35,6 +35,9 @@ uint8_t get_totem (void) {
         {0x10, 0x10, 0x7C, 0x10, 0x10}
     };
     uint8_t rand_i = rand() % LEDMAT_COLS_NUM;
+    while (rand_i == current_totem) {
+        rand_i = rand() % LEDMAT_COLS_NUM;
+    }
     for (uint8_t i=0; i<LEDMAT_COLS_NUM; i++) {
         totem[i] = totem_list[rand_i][i];
     }
@@ -56,7 +59,7 @@ int main (void)
     bool button_on = false;
     uint8_t current_column = 0;
     uint8_t health = MAX_HEALTH;
-    uint8_t correct = get_totem();
+    uint8_t correct = get_totem(-1);
 
     while (health >= 1)
     {
@@ -75,7 +78,7 @@ int main (void)
                     led_level = 0;
                     // SPIN!!!
                 }
-                correct = get_totem();
+                correct = get_totem(correct);
             } else {
                 led_level = 0;
                 // EPIC FAIL!
