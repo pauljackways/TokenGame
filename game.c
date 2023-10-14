@@ -1,4 +1,5 @@
 #define TOTEM 15
+#define MAX_HEALTH 5
 
 #include "system.h"
 #include "button.h"
@@ -9,7 +10,18 @@
 #include "display.h"
 #include "pio.h"
 
+static uint8_t bitmap[] =
+{
+    0x01, 0x01, 0x01, 0x01, 0x01
+};
 
+uint8_t damage (uint8_t health) 
+{
+    bitmap[health-1]--;
+    if (health == 1) {
+    }
+    return health - 1;
+}
 
 int main (void)
 {
@@ -26,11 +38,7 @@ int main (void)
     // startup();
 
     uint8_t current_column = 0;
-
-    static uint8_t bitmap[] =
-    {
-        0x30, 0x46, 0x40, 0x46, 0x30
-    };
+    uint8_t health = MAX_HEALTH;
 
     while (1)
     {
@@ -44,6 +52,7 @@ int main (void)
 
         if (button_pressed_p () && button_on == false)
         {
+            health = damage(health);
             button_on = true;
             led_level++;
             if (led_level > TOTEM) {
