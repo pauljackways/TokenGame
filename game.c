@@ -6,7 +6,6 @@
 #include "led.h"
 #include "attack.h"
 #include "startup.h"
-#include "choose.h"
 #include "display.h"
 #include "pio.h"
 #include "totem_nav.h"
