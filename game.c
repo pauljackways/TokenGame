@@ -63,6 +63,7 @@ int main (void)
 
     while (health >= 1)
     {
+        // display an arrow (flag)
         display_column (display_add(totem[current_column],healthbar[current_column]), current_column);
 
         if (totem_count < led_level) {
@@ -70,7 +71,7 @@ int main (void)
         } else {
             led_off ();
         }
-
+        // check for button press
         if (totem_nav_response()) {
             if (totem_nav_correct(correct)) {
                 led_level++;
@@ -97,14 +98,8 @@ int main (void)
         {
             button_on = false;
         }
-        // display an arrow (flag)
-        // check for button press
-            // if success: 
-                // encourage the player
-                // increment light
-            // if failure:
-                // you suck
-                // reset light
+        
+            
             // if light greater than light macro:
                 // run spin module (light flashes)
                 // set light to 0
