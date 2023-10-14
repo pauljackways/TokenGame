@@ -16,7 +16,7 @@ all: game.out
 
 
 # Compile: create object files from C source files.
-game.o: game.c ../../drivers/avr/system.h button.h led.h attack.h startup.h spin.h display.h ../../drivers/avr/pio.h 
+game.o: game.c ../../drivers/avr/system.h button.h led.h attack.h startup.h spin.h display.h ../../drivers/avr/pio.h totem_nav.h navswitch.o
 	$(CC) -c $(CFLAGS) $< -o $@
 
 pio.o: ../../drivers/avr/pio.c ../../drivers/avr/pio.h ../../drivers/avr/system.h
@@ -43,9 +43,15 @@ spin.o: spin.c ../../drivers/avr/system.h spin.h
 display.o: display.c ../../drivers/avr/pio.h ../../drivers/avr/system.h display.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
+totem_nav.o: totem_nav.c ../../drivers/avr/system.h navswitch.h totem_nav.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+navswitch.o: navswitch.c ../../drivers/avr/delay.h ../../drivers/avr/pio.h ../../drivers/avr/system.h navswitch.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
 
 # Link: create ELF output file from object files.
-game.out: game.o pio.o system.o button.o led.o attack.o startup.o spin.o display.o pio.o
+game.out: game.o pio.o system.o button.o led.o attack.o startup.o spin.o display.o pio.o totem_nav.o navswitch.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 

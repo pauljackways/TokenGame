@@ -9,6 +9,7 @@
 #include "spin.h"
 #include "display.h"
 #include "pio.h"
+#include "totem_nav.h"
 #include <stdlib.h>
 
 static uint8_t totem[LEDMAT_COLS_NUM];
@@ -25,18 +26,19 @@ uint8_t damage(uint8_t health)
     return health - 1;
 }
 
-void get_totem (void) {
+uint8_t get_totem (void) {
     const uint8_t totem_list[5][5] = {
         {0x10, 0x08, 0x7C, 0x08, 0x10},
+        {0x10, 0x10, 0x54, 0x38, 0x10},
         {0x10, 0x20, 0x7C, 0x20, 0x10},
         {0x10, 0x38, 0x54, 0x10, 0x10},
-        {0x10, 0x10, 0x54, 0x38, 0x10},
         {0x10, 0x10, 0x7C, 0x10, 0x10}
     };
-    uint8_t rand_i = rand() % 5;
+    uint8_t rand_i = rand() % LEDMAT_COLS_NUM;
     for (uint8_t i=0; i<LEDMAT_COLS_NUM; i++) {
         totem[i] = totem_list[rand_i][i];
     }
+    return rand_i;
 }
 
 int main (void)
@@ -45,6 +47,7 @@ int main (void)
     led_init ();
     button_init ();
     display_init();
+    totem_nav_init();
 
     // Game initialisation - life bar animation?
     // startup();
@@ -53,6 +56,7 @@ int main (void)
     bool button_on = false;
     uint8_t current_column = 0;
     uint8_t health = MAX_HEALTH;
+    uint8_t correct = get_totem();
 
     while (health >= 1)
     {
@@ -64,15 +68,27 @@ int main (void)
             led_off ();
         }
 
+        if (totem_nav_response()) {
+            if (totem_nav_correct(correct)) {
+                led_level++;
+                if (led_level > TOTEM) {
+                    led_level = 0;
+                    // SPIN!!!
+                }
+                correct = get_totem();
+            } else {
+                led_level = 0;
+                // EPIC FAIL!
+            }
+        }
+        
+
         if (button_pressed_p () && button_on == false)
         {
-            get_totem();
+            
             health = damage(health);
             button_on = true;
-            led_level++;
-            if (led_level > TOTEM) {
-                led_level = 0;
-            }
+            
         }
         if (!button_pressed_p ())
         {
