@@ -1,6 +1,5 @@
-#define TOTEM 5
-#define MAX_HEALTH 5
-// MAX_HEALTH should not be changed until a formula has beed added to reduce the health bars to scale
+#define TOTEM 15
+#define MAX_HEALTH 27
 
 #include "system.h"
 #include "button.h"
@@ -18,9 +17,11 @@ static uint8_t healthbar[] =
     0x01, 0x01, 0x01, 0x01, 0x01
 };
 
-uint8_t damage (uint8_t health) 
+uint8_t damage(uint8_t health) 
 {
-    healthbar[health-1]--;
+    if (health % (MAX_HEALTH / LEDMAT_COLS_NUM) == 1) {
+        healthbar[(health-1) / (MAX_HEALTH / LEDMAT_COLS_NUM)]--;
+    }
     return health - 1;
 }
 
