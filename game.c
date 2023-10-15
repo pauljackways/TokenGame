@@ -70,13 +70,17 @@ int main (void)
         } else {
             led_off ();
         }
+        // check for attack
+
+
         // check for button press
         if (totem_nav_response()) {
             if (totem_nav_correct(correct)) {
                 led_level++;
+                attack_check();
                 if (led_level > TOTEM) {
                     led_level = 0;
-                    // CHOOSE!!!
+                    // attack_choose();
                 }
                 correct = get_totem(correct);
             } else {

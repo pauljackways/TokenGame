@@ -31,7 +31,7 @@ void display_column(uint8_t row_pattern, uint8_t current_column)
         pio_output_high (rows[i]);
     }
     pio_output_low(cols[current_column]);
-    for (uint8_t i=0; i<8; i++) {
+    for (uint8_t i=0; i<7; i++) {
         current_row = i;
         if ((row_pattern >> i) & 1) {
             pio_output_low (rows[i]);

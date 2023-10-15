@@ -16,7 +16,7 @@ all: game.out
 
 
 # Compile: create object files from C source files.
-game.o: game.c ../../drivers/avr/system.h button.h led.h attack.h startup.h display.h ../../drivers/avr/pio.h totem_nav.h navswitch.o
+game.o: game.c ../../drivers/avr/system.h button.h led.h attack.h startup.h display.h ../../drivers/avr/pio.h totem_nav.h navswitch.h pacer.h ../../drivers/avr/timer.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 pio.o: ../../drivers/avr/pio.c ../../drivers/avr/pio.h ../../drivers/avr/system.h
@@ -31,7 +31,7 @@ button.o: button.c ../../drivers/avr/pio.h ../../drivers/avr/system.h button.h
 led.o: led.c ../../drivers/avr/pio.h ../../drivers/avr/system.h led.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-attack.o: attack.c ../../drivers/avr/system.h attack.h
+attack.o: attack.c ../../drivers/avr/system.h ../../drivers/avr/ir_uart.h display.h pacer.h attack.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 startup.o: startup.c ../../drivers/avr/system.h startup.h
@@ -46,11 +46,18 @@ totem_nav.o: totem_nav.c ../../drivers/avr/system.h navswitch.h totem_nav.h
 navswitch.o: navswitch.c ../../drivers/avr/delay.h ../../drivers/avr/pio.h ../../drivers/avr/system.h navswitch.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
+timer.o: ../../drivers/avr/timer.c ../../drivers/avr/system.h ../../drivers/avr/timer.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+pacer.o: pacer.c ../../drivers/avr/system.h ../../drivers/avr/timer.h pacer.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
 
 # Link: create ELF output file from object files.
-game.out: game.o pio.o system.o button.o led.o attack.o startup.o display.o pio.o totem_nav.o navswitch.o
+game.out: game.o pio.o system.o button.o led.o attack.o startup.o display.o totem_nav.o navswitch.o timer.o pacer.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
+
 
 
 # Target: clean project.
