@@ -3,6 +3,7 @@
 #include "pacer.h"
 #include "ir_uart.h"
 #include <stdbool.h>
+#include <stdlib.h>
 
 #define ATTACK_TIME 3 //s 
 #define PACER_FREQ 5000 //hz
@@ -16,7 +17,7 @@ bool attack_check(void) {
     // convert ABC... to 012... ensures within range if there is interference
     // attack %= 10;
     // attack %= 4; // is there a macro for this?
-    attack = 0;
+    attack = 3;
     attack_switch(attack);
     return true;
 }
@@ -74,13 +75,25 @@ void attack_nuke() {
     uint16_t loop_count = 0; 
     uint8_t current_column = 0;
     uint16_t iterations = ATTACK_TIME*PACER_FREQ;
+    uint8_t random;
+    const uint8_t nuke[5] = {
+        0x30, 0x22, 0x0A, 0x22, 0x30
+    };
     while(loop_count < iterations) { // how many loops in ATTACK_TIME s, accounting for columns
         
-        if (loop_count < iterations/3) {
+        if (loop_count < iterations/4) {
             display_column (0xFF, current_column);
-        }
-        if (loop_count > iterations/3) {
-            
+        } else if (loop_count % 2 == 0) {
+            display_column(nuke[current_column],current_column);
+        } else if (loop_count % 2 == 1) {
+            random = rand() % 127;
+            if (loop_count > iterations/4 && loop_count < iterations/2) {
+                display_column(random,current_column);
+            } else if (loop_count % 8 == 1 && loop_count > iterations/2 && loop_count < 3*iterations/4){
+                display_column(random,current_column);
+            } else if (loop_count % 32 == 1) {
+                display_column(random,current_column);
+            }
         }
         current_column++;
         if (current_column > (LEDMAT_COLS_NUM - 1))
