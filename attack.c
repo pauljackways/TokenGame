@@ -9,17 +9,16 @@
 #define PACER_FREQ 750 //hz
 
 bool attack_check(void) {
-    char attack;
-    // if (ir_uart_read_ready_p ())
-    //     {
-	//     attack = (ir_uart_getc ());
-    //     }
-    // convert ABC... to 012... ensures within range if there is interference
-    // attack %= 10;
-    // attack %= 4; // is there a macro for this?
-    attack = 2;
-    attack_switch(attack);
-    return true;
+    char attack = 1;
+    if (ir_uart_read_ready_p ()) {
+	    attack = (ir_uart_getc ());
+        // convert ABC... to 012... ensures within range if there is interference
+        attack %= 10;
+        attack %= 4; // is there a macro for this?
+        attack_switch(attack);
+        return true;
+        }
+    return false;
 }
 
 void attack_switch(char attack) {

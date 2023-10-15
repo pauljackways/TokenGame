@@ -71,13 +71,14 @@ int main (void)
             led_off ();
         }
         // check for attack
-
+        if (attack_check()) {
+            health = damage(health);
+        }
 
         // check for button press
         if (totem_nav_response()) {
             if (totem_nav_correct(correct)) {
                 led_level++;
-                attack_check();
                 if (led_level > TOTEM) {
                     led_level = 0;
                     // attack_choose();
@@ -92,8 +93,6 @@ int main (void)
 
         if (button_pressed_p () && button_on == false)
         {
-            
-            health = damage(health);
             button_on = true;
             
         }
@@ -106,9 +105,6 @@ int main (void)
             // if light greater than light macro:
                 // run spin module (light flashes)
                 // set light to 0
-        // check for attack
-            // if attacked: run attack module.  
-            // decrease life bar
             // if life bar 0:
                 // run ending module
         totem_count++;
