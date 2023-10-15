@@ -17,7 +17,7 @@ bool attack_check(void) {
     // convert ABC... to 012... ensures within range if there is interference
     // attack %= 10;
     // attack %= 4; // is there a macro for this?
-    attack = 3;
+    attack = 2;
     attack_switch(attack);
     return true;
 }
@@ -31,7 +31,7 @@ void attack_switch(char attack) {
             attack_sword();
             break;
         case 2:
-            attack_cinder();
+            attack_bambooz();
             break;
         case 3:
             attack_nuke();
@@ -76,9 +76,9 @@ void attack_sword() {
         {0xFF, 96, 112, 120, 124},
         {64, 96, 112, 120, 124}
     };
-    uint8_t frame = iterations/30;
+    uint16_t frame = iterations/30;
     while(loop_count < iterations) { // how many loops in ATTACK_TIME s, accounting for columns
-        if (loop_count > 1*frame && loop_count < 2*frame) {
+        if (loop_count < 2*frame) {
             display_column (0xFF, current_column);
         }
         if (loop_count > 2*frame && loop_count < 3*frame) {
@@ -115,8 +115,41 @@ void attack_sword() {
     }
 }
 
-void attack_cinder() {
-    
+void attack_bambooz() {
+
+
+    pacer_init (PACER_FREQ);
+    uint16_t loop_count = 0; 
+    uint8_t current_column = 0;
+    uint16_t iterations = ATTACK_TIME*PACER_FREQ;
+    const uint8_t bambooz[4][5] = {
+    {126, 66, 90, 82, 94},
+    {2, 58, 42, 34, 58},
+    {61, 37, 45, 33, 63},
+    {62, 34, 42, 46, 32}
+    };
+    uint16_t max_rate = 50;
+    uint16_t rate = 0;
+    uint8_t frame = 0;
+    while(loop_count < iterations) { // how many loops in ATTACK_TIME s, accounting for columns
+        
+        if (rate == max_rate) {
+            frame++;
+            frame %= 4; //number of frames
+            rate = 0;
+        }
+
+        display_column (bambooz[frame][current_column], current_column);
+
+        current_column++;
+        if (current_column > (LEDMAT_COLS_NUM - 1))
+        {
+            current_column = 0;
+        }   
+        pacer_wait ();
+        rate++;
+        loop_count++;
+    }
 }
 
 void attack_nuke() {
