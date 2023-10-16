@@ -31,7 +31,7 @@ button.o: button.c ../../drivers/avr/pio.h ../../drivers/avr/system.h button.h
 led.o: led.c ../../drivers/avr/pio.h ../../drivers/avr/system.h led.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-attack.o: attack.c ../../drivers/avr/system.h ../../drivers/avr/ir_uart.h display.h pacer.h attack.h
+attack.o: attack.c ../../drivers/avr/system.h ../../drivers/avr/ir_uart.h display.h pacer.h attack.h ../../drivers/avr/pio.h navswitch.h button.h led.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 startup.o: startup.c ../../drivers/avr/system.h startup.h
