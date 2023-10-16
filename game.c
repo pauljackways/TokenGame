@@ -81,7 +81,7 @@ int main (void)
                 led_level++;
                 if (led_level > TOTEM) {
                     led_level = 0;
-                    // attack_choose();
+                    attack_choose();
                 }
                 correct = get_totem(correct);
             } else {
