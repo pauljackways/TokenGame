@@ -4,14 +4,21 @@
 #include "ir_uart.h"
 #include <stdbool.h>
 #include <stdlib.h>
+#include "system.h"
+#include "pio.h"
+#include "navswitch.h"
+#include "button.h"
+#include "led.h"
 
 #define ATTACK_TIME 2 //s 
-#define PACER_FREQ 750 //hz
+#define PACER_FREQ 750 //hzs
+#define LED_PIO PIO_DEFINE (PORT_C, 2)
+
 
 bool attack_check(void) {
     char attack = 1;
     if (ir_uart_read_ready_p ()) {
-	    attack = (ir_uart_getc ());
+	    attack = ir_uart_getc ();
         // convert ABC... to 012... ensures within range if there is interference
         attack %= 10;
         attack %= 4; // is there a macro for this?
@@ -163,7 +170,7 @@ void attack_nuke() {
     while(loop_count < iterations) { // how many loops in ATTACK_TIME s, accounting for columns
         
         if (loop_count < iterations/4) {
-            display_column (0xFF, current_column);
+            display_column (0xFF, current_column);    if (ir_uart_read_ready_p ()) {
         } else if (loop_count % 2 == 0) {
             display_column(nuke[current_column],current_column);
         } else if (loop_count % 2 == 1) {
@@ -183,10 +190,89 @@ void attack_nuke() {
         }   
         pacer_wait ();
         loop_count++;
+        }
     }
 }
 
+// Bitmaps for the symbols
+static const uint8_t lightning_symbol[5] = {
+    0x00, 0x44, 0x2A, 0x11, 0x00
+};
+
+static const uint8_t sword_symbol[5] = {
+    0x0A, 0x04, 0x0A, 0x10, 0x20
+};
+
+static const uint8_t bambooz_symbol[5] = {
+    0x78, 0x48, 0x4D, 0x40, 0x60
+};
+
+static const uint8_t nuke_symbol[5] = {
+    0x30, 0x22, 0x0A, 0x22, 0x30
+};
+
+// Array of symbols
+static const uint8_t* symbols[NUM_SYMBOLS] = {
+    lightning_symbol,
+    sword_symbol,
+    bambooz_symbol,
+    nuke_symbol
+};
+
+
 
 void attack_choose(void) {
+    uint8_t current_column = 0;
+    Symbols symbol_index = LIGHTNING; // Start with the LIGHTNING symbol.
 
+    system_init();
+    pacer_init(500); // Adjust the pacer frequency as needed.
+    navswitch_init();
+    ir_uart_init();
+    led_init();
+    button_init();
+    
+
+    bool is_led_on = false;
+    uint16_t led_flash_interval = 100; // Adjust the flashing interval as needed
+    uint16_t led_flash_counter = 0;
+    int chooser = 0;
+    while (chooser == 0) {
+        pacer_wait();
+       
+        // Handle NavSwitch input
+        navswitch_update();
+        if (navswitch_push_event_p(NAVSWITCH_EAST)) {
+            // Cycle to the next symbol
+            symbol_index = (symbol_index + 1) % NUM_SYMBOLS;
+        }
+        if (navswitch_push_event_p(NAVSWITCH_WEST)) {
+            // Cycle to the next symbol
+            symbol_index = (symbol_index - 1) % NUM_SYMBOLS;
+        }
+        display_column(symbols[symbol_index][current_column], current_column);
+        current_column++;
+
+        if (current_column >= LEDMAT_COLS_NUM) {
+            current_column = 0;
+        }
+
+        if (led_flash_counter >= led_flash_interval) {
+            is_led_on = !is_led_on;
+            if (is_led_on) {
+                pio_output_high (LED_PIO); // Turn on the LED
+            } else {
+                pio_output_low (LED_PIO);  // Turn off the LED
+            }
+            led_flash_counter = 0;
+        }
+        led_flash_counter++;
+
+
+        if (button_pressed_p()) {
+            char attack_char = '0' + symbol_index;
+            ir_uart_putc(attack_char);
+            chooser = 1;
+        }
+    }
 }
