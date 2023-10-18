@@ -6,6 +6,7 @@ void totem_nav_init(void) {
     navswitch_init ();
 }
 
+// Check for navswitch input
 bool totem_nav_response (void) {
     navswitch_update();
     if (navswitch_push_event_p (NAVSWITCH_NORTH) || \
@@ -19,6 +20,7 @@ bool totem_nav_response (void) {
     }
 }
 
+// Check if navswitch has been pushed in the correct direction
 bool totem_nav_correct (uint8_t answer) {
     if (navswitch_down_p (answer)){
         return true;
