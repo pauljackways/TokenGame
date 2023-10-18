@@ -1,3 +1,8 @@
+/*File:   attack.c  
+# Author: Paul Jackways (pja117), Katelyn McCarthy Freeman (kmc313)
+# Date:   18 Oct 2023
+# Descr:  file contaning the attack functions of the game*/
+
 #include "attack.h"
 #include "display.h"
 #include "pacer.h"
