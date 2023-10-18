@@ -35,7 +35,7 @@ void damage(void)
     health--;
 }
 
-// Get random totem
+// Get random totem that is not the same as the previous totem.
 uint8_t get_totem (uint8_t current_totem) {
     const uint8_t totem_list[5][5] = {
         {0x10, 0x08, 0x7C, 0x08, 0x10},
@@ -62,9 +62,12 @@ int main (void)
     display_init();
     totem_nav_init();
     attack_init();
+
     uint8_t current_column = 0;
     const uint8_t push_button[5] = // Push button symbol
         {2, 68, 111, 68, 2};
+
+    // to start the game, both players press the button at the same time
     while (!button_pressed_p()) {
         display_column (push_button[current_column], current_column);
         current_column++;
@@ -98,42 +101,24 @@ int main (void)
 
         // Check for button press
         if (totem_nav_response()) {
+            // if correct
             if (totem_nav_correct(correct)) {
                 led_level++;
+                // if totem pole complete
                 if (led_level > TOTEM) {
                     led_level = 0;
                     attack_choose_damage = attack_choose(); 
+                    // Accounts for attacks that occured when choosing an attack
                     for (uint8_t i=0; i<attack_choose_damage; i++) {
                         damage();
                     }
                 }
                 correct = get_totem(correct);
             } else {
-                led_level = 0; // Restart
+                led_level = 0; // Restart. EPIC FAIL!
             }
         }
         
-<<<<<<< HEAD
-            
-            // if light greater than light macro:
-                // run spin module (light flashes)
-                // set light to 0
-            // if life bar 0:
-                // run ending module
-=======
-        // Check for button press
-        if (button_pressed_p () && button_on == false)
-        {
-            button_on = true;
-            
-        }
-        if (!button_pressed_p ())
-        {
-            button_on = false;
-        }
-        
-        // Reset for next round
->>>>>>> 5fa26e2cbbd35551792b37d4502c1be20660d4c1
         totem_count++;
         if (totem_count >= TOTEM) {
             totem_count = 0;
