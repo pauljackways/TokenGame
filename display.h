@@ -1,3 +1,8 @@
+/*File:   display.h
+# Author: Paul Jackways (pja117), Katelyn McCarthy Freeman (kmc313)
+# Date:   18 Oct 2023
+# Descr:  header file for display.c*/
+
 #ifndef DISPLAY_H
 #define DISPLAY_H
 
