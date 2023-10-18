@@ -1,5 +1,5 @@
-#define TOTEM 15
-#define MAX_HEALTH 27
+#define TOTEM 10
+#define MAX_HEALTH 5
 
 #include "system.h"
 #include "button.h"
@@ -17,12 +17,14 @@ static uint8_t healthbar[] =
     0x01, 0x01, 0x01, 0x01, 0x01
 };
 
-uint8_t damage(uint8_t health) 
+static uint8_t health = MAX_HEALTH;
+
+void damage(void) 
 {
-    if (health % (MAX_HEALTH / LEDMAT_COLS_NUM) == 1) {
+    if (health % (MAX_HEALTH / LEDMAT_COLS_NUM) == 0) {
         healthbar[(health-1) / (MAX_HEALTH / LEDMAT_COLS_NUM)]--;
     }
-    return health - 1;
+    health--;
 }
 
 uint8_t get_totem (uint8_t current_totem) {
@@ -50,16 +52,27 @@ int main (void)
     button_init ();
     display_init();
     totem_nav_init();
+    attack_init();
+    uint8_t current_column = 0;
+    const uint8_t push_button[5] =
+        {2, 68, 111, 68, 2};
+    while (!button_pressed_p()) {
+        display_column (push_button[current_column], current_column);
+        current_column++;
+        if (current_column > (LEDMAT_COLS_NUM - 1))
+        {
+            current_column = 0;
+        }   
+    }
 
     // Game initialisation - life bar animation?
     // startup();
     uint8_t led_level = 0;
     uint8_t totem_count = 0;
     bool button_on = false;
-    uint8_t current_column = 0;
-    uint8_t health = MAX_HEALTH;
     uint8_t correct = get_totem(-1);
-
+    uint8_t attack_choose_damage; //damage taken while in attack_choose()
+    current_column = 0;
     while (health >= 1)
     {
         // display an arrow (flag)
@@ -72,7 +85,7 @@ int main (void)
         }
         // check for attack
         if (attack_check()) {
-            health = damage(health);
+            damage();
         }
 
         // check for button press
@@ -81,7 +94,10 @@ int main (void)
                 led_level++;
                 if (led_level > TOTEM) {
                     led_level = 0;
-                    attack_choose();
+                    attack_choose_damage = attack_choose();
+                    for (uint8_t i=0; i<attack_choose_damage; i++) {
+                        damage();
+                    }
                 }
                 correct = get_totem(correct);
             } else {

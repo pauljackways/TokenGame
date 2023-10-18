@@ -13,10 +13,15 @@
 #define ATTACK_TIME 2 //s 
 #define PACER_FREQ 750 //hzs
 #define LED_PIO PIO_DEFINE (PORT_C, 2)
+// Note: There are exactly 4 attacks
 
+
+void attack_init(void) {
+    ir_uart_init();
+}
 
 bool attack_check(void) {
-    char attack = 1;
+    char attack = 0;
     if (ir_uart_read_ready_p ()) {
 	    attack = ir_uart_getc ();
         // convert ABC... to 012... ensures within range if there is interference
@@ -170,7 +175,7 @@ void attack_nuke() {
     while(loop_count < iterations) { // how many loops in ATTACK_TIME s, accounting for columns
         
         if (loop_count < iterations/4) {
-            display_column (0xFF, current_column);    if (ir_uart_read_ready_p ()) {
+            display_column (0xFF, current_column);
         } else if (loop_count % 2 == 0) {
             display_column(nuke[current_column],current_column);
         } else if (loop_count % 2 == 1) {
@@ -190,56 +195,36 @@ void attack_nuke() {
         }   
         pacer_wait ();
         loop_count++;
-        }
     }
 }
 
-// Bitmaps for the symbols
-static const uint8_t lightning_symbol[5] = {
-    0x00, 0x44, 0x2A, 0x11, 0x00
-};
 
-static const uint8_t sword_symbol[5] = {
-    0x0A, 0x04, 0x0A, 0x10, 0x20
-};
-
-static const uint8_t bambooz_symbol[5] = {
-    0x78, 0x48, 0x4D, 0x40, 0x60
-};
-
-static const uint8_t nuke_symbol[5] = {
-    0x30, 0x22, 0x0A, 0x22, 0x30
+// Bitmaps for the selection symbols
+static const uint8_t symbols[4][5] = {
+    {0x00, 0x44, 0x2A, 0x11, 0x00},
+    {0x0A, 0x04, 0x0A, 0x10, 0x20},
+    {0x78, 0x48, 0x4D, 0x40, 0x60},
+    {0x30, 0x22, 0x0A, 0x22, 0x30}
 };
 
 // Array of symbols
-static const uint8_t* symbols[NUM_SYMBOLS] = {
-    lightning_symbol,
-    sword_symbol,
-    bambooz_symbol,
-    nuke_symbol
-};
 
-
-
-void attack_choose(void) {
+uint8_t attack_choose(void) {
     uint8_t current_column = 0;
-    Symbols symbol_index = LIGHTNING; // Start with the LIGHTNING symbol.
+    Symbols_enum symbol_index = rand() % NUM_SYMBOLS; // Start with a random symbol.
 
-    system_init();
-    pacer_init(500); // Adjust the pacer frequency as needed.
-    navswitch_init();
     ir_uart_init();
     led_init();
     button_init();
     
 
     bool is_led_on = false;
-    uint16_t led_flash_interval = 100; // Adjust the flashing interval as needed
+    uint16_t led_flash_interval = 500; // Adjust the flashing interval as needed
     uint16_t led_flash_counter = 0;
     int chooser = 0;
+    uint8_t attack_count = 0;
     while (chooser == 0) {
-        pacer_wait();
-       
+        attack_count += attack_check();
         // Handle NavSwitch input
         navswitch_update();
         if (navswitch_push_event_p(NAVSWITCH_EAST)) {
@@ -270,9 +255,9 @@ void attack_choose(void) {
 
 
         if (button_pressed_p()) {
-            char attack_char = '0' + symbol_index;
-            ir_uart_putc(attack_char);
+            ir_uart_putc(symbol_index + 10);
             chooser = 1;
         }
     }
+    return attack_count;
 }
