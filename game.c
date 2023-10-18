@@ -11,7 +11,6 @@
 #include "button.h"
 #include "led.h"
 #include "attack.h"
-#include "startup.h"
 #include "display.h"
 #include "pio.h"
 #include "totem_nav.h"
