@@ -12,27 +12,28 @@
 
 #define ATTACK_TIME 2 //s 
 #define PACER_FREQ 750 //hzs
-#define LED_PIO PIO_DEFINE (PORT_C, 2)
 // Note: There are exactly 4 attacks
 
-
+// initialise connection
 void attack_init(void) {
     ir_uart_init();
 }
 
+// Checks for attacks. Runs attack animation, then returns true if attacked
 bool attack_check(void) {
     char attack = 0;
     if (ir_uart_read_ready_p ()) {
 	    attack = ir_uart_getc ();
         // convert ABC... to 012... ensures within range if there is interference
         attack %= 10;
-        attack %= 4; // is there a macro for this?
+        attack %= NUM_SYMBOLS; // number of attacks
         attack_switch(attack);
         return true;
         }
     return false;
 }
 
+// Simple switch, breaks attack animations into separate functions
 void attack_switch(char attack) {
     switch(attack) {
         case 0:
@@ -50,6 +51,7 @@ void attack_switch(char attack) {
     }
 }
 
+// lightning attack - flashing
 void attack_lightning() {
     pacer_init (PACER_FREQ);
     uint16_t loop_count = 0; 
@@ -73,6 +75,7 @@ void attack_lightning() {
     }
 }
 
+// sword attack - cut in half
 void attack_sword() {
     pacer_init (PACER_FREQ);
     uint16_t loop_count = 0; 
@@ -126,9 +129,8 @@ void attack_sword() {
     }
 }
 
+// bambooz (confusion) attack - spiral
 void attack_bambooz() {
-
-
     pacer_init (PACER_FREQ);
     uint16_t loop_count = 0; 
     uint8_t current_column = 0;
@@ -163,6 +165,7 @@ void attack_bambooz() {
     }
 }
 
+// nuke attack - flash then explosion, with nuke symbol overlaid
 void attack_nuke() {
     pacer_init (PACER_FREQ);
     uint16_t loop_count = 0; 
@@ -173,11 +176,12 @@ void attack_nuke() {
         0x30, 0x22, 0x0A, 0x22, 0x30
     };
     while(loop_count < iterations) { // how many loops in ATTACK_TIME s, accounting for columns
-        
+        // flash and nuke symbol
         if (loop_count < iterations/4) {
             display_column (0xFF, current_column);
         } else if (loop_count % 2 == 0) {
             display_column(nuke[current_column],current_column);
+        // Explosion - random static that fades out
         } else if (loop_count % 2 == 1) {
             random = rand() % 127;
             if (loop_count > iterations/4 && loop_count < iterations/2) {
@@ -207,16 +211,10 @@ static const uint8_t symbols[4][5] = {
     {0x30, 0x22, 0x0A, 0x22, 0x30}
 };
 
-// Array of symbols
-
+// 
 uint8_t attack_choose(void) {
     uint8_t current_column = 0;
     Symbols_enum symbol_index = rand() % NUM_SYMBOLS; // Start with a random symbol.
-
-    ir_uart_init();
-    led_init();
-    button_init();
-    
 
     bool is_led_on = false;
     uint16_t led_flash_interval = 500; // Adjust the flashing interval as needed
@@ -245,9 +243,9 @@ uint8_t attack_choose(void) {
         if (led_flash_counter >= led_flash_interval) {
             is_led_on = !is_led_on;
             if (is_led_on) {
-                pio_output_high (LED_PIO); // Turn on the LED
+                led_on (); // Turn on the LED
             } else {
-                pio_output_low (LED_PIO);  // Turn off the LED
+                led_off ();  // Turn off the LED
             }
             led_flash_counter = 0;
         }
@@ -255,7 +253,7 @@ uint8_t attack_choose(void) {
 
 
         if (button_pressed_p()) {
-            ir_uart_putc(symbol_index + 10);
+            ir_uart_putc(symbol_index + 10); // 0 -> 10 to avoid possible interference when sending 0
             chooser = 1;
         }
     }

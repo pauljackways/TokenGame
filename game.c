@@ -1,4 +1,4 @@
-#define TOTEM 10
+#define TOTEM 3
 #define MAX_HEALTH 5
 
 #include "system.h"
@@ -69,7 +69,6 @@ int main (void)
     // startup();
     uint8_t led_level = 0;
     uint8_t totem_count = 0;
-    bool button_on = false;
     uint8_t correct = get_totem(-1);
     uint8_t attack_choose_damage; //damage taken while in attack_choose()
     current_column = 0;
@@ -104,17 +103,6 @@ int main (void)
                 led_level = 0;
                 // EPIC FAIL!
             }
-        }
-        
-
-        if (button_pressed_p () && button_on == false)
-        {
-            button_on = true;
-            
-        }
-        if (!button_pressed_p ())
-        {
-            button_on = false;
         }
         
             
