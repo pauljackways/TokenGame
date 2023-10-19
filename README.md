@@ -1,9 +1,7 @@
 ENCE260 Group Assignment
 Group ID: 210
 Authors: Paul Jackways (pja117), Katelyn McCarthy Freeman (kmc313)
-Game: 
-
-Description: 
+Game: Totem terror
 
 Set-up: There are various macro options for the game. These include the totem number of lives (MAX_HEALTH), total number of totems (TOTEM) (both from game.c0), the time an attack goes for (ATTACK_TIME), pacer frequency (PACER_FREQ) (attack.c). Make sure that if you are playing on two different computers, that these macros are the same for each device.
 
