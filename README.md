@@ -6,8 +6,7 @@ Game: Totem terror
 
 How to play:
 
-Once make program is run on one of the funkits, a symbol will show with an arrow pointing down to a button. This indicates that the game is ready to play on that device. 
-Place the two devices next to each other such that IR receiver matches up with IR transmitter. 
+Place the two devices next to each other such that IR receiver matches up with IR transmitter. Ensure that the push button symbol (an arrow pointing down to a button) is showing on each device. 
 
 Arrows called 'totems' appear on the device. Your goal is to use the navswitch to select the correct totem. The '+' totem indicates that the navswitch should be pushed down. 
 After each correct totem selection, the blue light will increase in brightness. This shows how close you are to attacking.
