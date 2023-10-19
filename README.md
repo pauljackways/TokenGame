@@ -5,7 +5,7 @@ Game:
 
 Description: 
 
-Set-up:
+Set-up: Plug the two UC funkits into the computer containing the gamefile. Open the the game in VSCode and type make into the terminal. You should see text start to appear in the terminal. After the terminal stops, type make program and wait for the text in the terminal to stop before typing make program again. You should see that both UC funkits have now turned on.
 
 How to play:
 Once make program is run on one of the funkits, a symbol will show with an arrow pointing down to a button. This indicates that the game is ready to play on that device. 
