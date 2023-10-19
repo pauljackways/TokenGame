@@ -4,12 +4,6 @@ Authors: Paul Jackways (pja117), Katelyn McCarthy Freeman (kmc313)
 
 Game: Totem terror
 
-Set-up: 
-
-There are various macro options for the game. These include the totem number of lives (MAX_HEALTH), total number of totems (TOTEM) (both from game.c0), the time an attack goes for (ATTACK_TIME), pacer frequency (PACER_FREQ) (attack.c). Make sure that if you are playing on two different computers, that these macros are the same for each device.
-
-Plug the two UC funkits into the computer containing the gamefile. Open the the game in VSCode and type make into the terminal. You should see text start to appear in the terminal. After the terminal stops, type make program and wait for the text in the terminal to stop before typing make program again. You should see that both UC funkits have now turned on.
-
 How to play:
 
 Once make program is run on one of the funkits, a symbol will show with an arrow pointing down to a button. This indicates that the game is ready to play on that device. 
@@ -28,5 +22,13 @@ bambooz - confuse and hypnotise the other player
 
 to send your attack, use the button next to the IR receiver. This will disable the other player for a specified amount of time, and decrease their health bar.
 Once a player's healthbar reaches zero, they are dead and the game will end on their device. The last player with their game still running is the winner.
+
+Set-up: 
+
+There are various macro options for the game. These include the totem number of lives (MAX_HEALTH), total number of totems (TOTEM) (both from game.c), the time an attack goes for (ATTACK_TIME), pacer frequency (PACER_FREQ) (attack.c). Make sure that if you are playing on two different computers, that these macros are the same for each device.
+
+Plug the two UC funkits into the computer containing the gamefile. Open the the game in VSCode and type make into the terminal. You should see text start to appear in the terminal. After the terminal stops, type make program and wait for the text in the terminal to stop before typing make program again. You should see that both UC funkits have now turned on.
+
+
 
 
