@@ -14,9 +14,13 @@ If you make an incorrect seleciton, you will be sent back to the start and the l
 
 Once you have selected enough totems in a row correctly, the blue light will flash, indicating you are in attack mode. A random attack will be displayed, but you can change the attack by using the left and right buttons of the navswitch. 
 The attacks are:
+
 nuke - A nuclear explosion
+
 lightning - a lightning strike
+
 sword - cut the other person in half
+
 bambooz - confuse and hypnotise the other player
 
 to send your attack, use the button next to the IR receiver. This will disable the other player for a specified amount of time, and decrease their health bar.
