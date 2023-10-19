@@ -1,4 +1,3 @@
-#define TOTEM 3
 /*File:   game.c  
 # Author: Paul Jackways (pja117), Katelyn McCarthy Freeman (kmc313)
 # Date:   18 Oct 2023
